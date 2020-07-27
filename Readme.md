@@ -1,7 +1,7 @@
 # Личный проект «Киноман» [![Build status][travis-image]][travis-url]
 
 * Студент: [Ильдар Гайнуллин](https://up.htmlacademy.ru/ecmascript/12/user/1197529).
-* Наставник: `Неизвестно`.
+* Наставник: `Яна Казанина`.
 
 ---
 
