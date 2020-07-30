@@ -260,8 +260,6 @@ const createFooterStatisticsTemplate = () => {
   );
 };
 
-
-
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
@@ -277,7 +275,7 @@ const filmListContainerElement = siteMainElement.querySelector(`.films-list__con
 
 for (let i = 0; i < FILM_COUNT; i++) {
   render(filmListContainerElement, createFilmCardTemplate(), `beforeend`);
-};
+}
 const filmListElement = siteMainElement.querySelector(`.films-list`);
 render(filmListElement, createShowMoreBtnTemplate(), `beforeend`);
 
@@ -290,7 +288,7 @@ filmListExtraElements.forEach((filmListExtraElement) => {
 
   for (let i = 0; i < FILM_EXTRA_COUNT; i++) {
     render(extraElementContainer, createFilmCardTemplate(), `beforeend`);
-  };
+  }
 });
 
 const footerStatisticsElement = siteFooterElement.querySelector(`.footer__statistics`);
