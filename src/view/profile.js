@@ -1,10 +1,14 @@
+const LEVEL_1_LIMIT = 1;
+const LEVEL_2_LIMIT = 10;
+const LEVEL_3_LIMIT = 20;
+
 const ranks = [`Novice`, `Fan`, `Movie Buff`];
 const generateRank = (filmsCount) => {
-  if (filmsCount >= 1 && filmsCount <= 10) {
+  if (filmsCount >= LEVEL_1_LIMIT && filmsCount <= LEVEL_2_LIMIT) {
     return ranks[0];
-  } else if (filmsCount >= 11 && filmsCount <= 20) {
+  } else if (filmsCount > LEVEL_2_LIMIT && filmsCount <= LEVEL_3_LIMIT) {
     return ranks[1];
-  } else if (filmsCount > 20) {
+  } else if (filmsCount > LEVEL_3_LIMIT) {
     return ranks[2];
   }
   return ``;

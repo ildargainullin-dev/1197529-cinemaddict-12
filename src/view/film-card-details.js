@@ -35,24 +35,32 @@ export const createFilmCardDetailsTemplate = (film) => {
     }
   };
 
-  const renderComments = (commentsArray) => {
-    let renderedComment = ``;
-    for (let comment of commentsArray) {
-      renderedComment += `<li class="film-details__comment">
+  const createCommentTemplate = (comment) => {
+    const {
+      emotion,
+      text,
+      author,
+      date
+    } = comment;
+    return (
+      `<li class="film-details__comment">
   <span class="film-details__comment-emoji">
-  <img src=${comment.emotion} width="55" height="55" alt="emoji-smile">
+  <img src=${emotion} width="55" height="55" alt="emoji-smile">
   </span>
   <div>
-  <p class="film-details__comment-text">${comment.text}</p>
+  <p class="film-details__comment-text">${text}</p>
   <p class="film-details__comment-info">
-  <span class="film-details__comment-author">${comment.author}</span>
-  <span class="film-details__comment-day">${comment.date}</span>
+  <span class="film-details__comment-author">${author}</span>
+  <span class="film-details__comment-day">${date}</span>
   <button class="film-details__comment-delete">Delete</button>
   </p>
   </div>
-  </li>`;
-    }
-    return renderedComment;
+  </li>`
+    );
+  };
+  const createCommentsListTemplate = (comment) => {
+    const commentItemsTemplate = comment.map(createCommentTemplate).join(``);
+    return `<ul class="film-details__comments-list">${commentItemsTemplate}</ul>`;
   };
 
   const isWatchedAtribute = isWatched ? `checked` : ``;
@@ -128,10 +136,9 @@ export const createFilmCardDetailsTemplate = (film) => {
   <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
   <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${isWatchedAtribute}>
-  <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
+  <label for="watched" class="film-details__control-label film-details__control-label--watched">Already Аwatched</label>
 
   <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${isFavoriteAtribute}>
-
   <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
   </section>
   </div>
@@ -139,11 +146,7 @@ export const createFilmCardDetailsTemplate = (film) => {
   <div class="form-details__bottom-container">
   <section class="film-details__comments-wrap">
   <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
-
-  <ul class="film-details__comments-list">
-  ${renderComments(comments)}
-  </ul>
-
+  ${createCommentsListTemplate(comments)}
   <div class="film-details__new-comment">
   <div for="add-emoji" class="film-details__add-emoji-label"></div>
 

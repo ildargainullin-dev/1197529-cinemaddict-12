@@ -1,33 +1,16 @@
-import {
-  createProfileTemplate
-} from "./view/profile.js";
-import {
-  createSiteNavigationTemplate
-} from "./view/site-navigation.js";
-import {
-  createFilmAreaTempate
-} from "./view/film-area.js";
-import {
-  createFilmCardTemplate
-} from "./view/film-card.js";
-import {
-  createShowMoreBtnTemplate
-} from "./view/show-more-btn.js";
-import {
-  createFilmCardDetailsTemplate
-} from "./view/film-card-details.js";
-import {
-  createFooterStatisticsTemplate
-} from "./view/footer-statistic.js";
-import {
-  generateFilm
-} from "./mock/film.js";
-import {
-  generateFilmsFilter
-} from "./mock/filters.js";
+import {createProfileTemplate} from "./view/profile.js";
+import {createSiteNavigationTemplate} from "./view/site-navigation.js";
+import {createFilmAreaTempate} from "./view/film-area.js";
+import {createFilmCardTemplate} from "./view/film-card.js";
+import {createShowMoreBtnTemplate} from "./view/show-more-btn.js";
+import {createFilmCardDetailsTemplate} from "./view/film-card-details.js";
+import {createFooterStatisticsTemplate} from "./view/footer-statistic.js";
+import {generateFilm} from "./mock/film.js";
+import {generateFilmsFilter} from "./mock/filters.js";
 
 const FILM_COUNT = 20;
 const FILM_COUNT_PER_STEP = 5;
+const ESC_KEY_CODE = 27;
 
 const films = new Array(FILM_COUNT).fill().map(generateFilm);
 const filters = generateFilmsFilter(films);
@@ -44,6 +27,7 @@ render(siteMainElement, createSiteNavigationTemplate(filters), `beforeend`);
 render(siteMainElement, createFilmAreaTempate(), `beforeend`);
 
 const filmListContainerElment = siteMainElement.querySelector(`.films-list__container`);
+
 
 for (let i = 0; i < Math.min(films.length, FILM_COUNT_PER_STEP); i++) {
   render(filmListContainerElment, createFilmCardTemplate(films[i]), `beforeend`);
@@ -85,7 +69,7 @@ popupCloseBtn.addEventListener(`click`, () => {
   popup.remove();
 });
 const escKeyDown = (evt) => {
-  if (evt.keyCode === 27) {
+  if (evt.keyCode === ESC_KEY_CODE) {
     popup.remove();
     window.removeEventListener(`keydown`, escKeyDown);
   }

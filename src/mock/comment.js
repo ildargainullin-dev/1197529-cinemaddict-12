@@ -1,23 +1,15 @@
 import {
-  getRandomInteger
+  getRandomInteger,
+  changeDateFormat,
+  getRandomElement
 } from "../utils.js";
 
-const generateText = () => {
-  const texts = [`Interesting setting and a good cast`, `Booooooooooring`, `Very very old. Meh`, `Almost two hours? Seriously?`, `A quietly large achievement.`, `A tenderly intimate, affecting documentary portrait ...`, `For Ahkeem is an essential insight into marginalized America.`, `A film of rare power and unique forcefulness.`];
-  const randomText = texts[getRandomInteger(0, texts.length - 1)];
-  return randomText;
-};
+const texts = [`Interesting setting and a good cast`, `Booooooooooring`, `Very very old. Meh`, `Almost two hours? Seriously?`, `A quietly large achievement.`, `A tenderly intimate, affecting documentary portrait ...`, `For Ahkeem is an essential insight into marginalized America.`, `A film of rare power and unique forcefulness.`];
+const authors = [`Tim Macoveev`, `John Doe`, `Ivan Kozlov`, `Ammy Lee`, `Natali Portman`];
 
 const generateEmotion = () => {
   const emotions = [`smile`, `sleeping`, `puke`, `angry`];
-  const randomEmotion = `./images/emoji/${emotions[getRandomInteger(0, emotions.length - 1)]}.png`;
-  return randomEmotion;
-};
-
-const generateAuthor = () => {
-  const authors = [`Tim Macoveev`, `John Doe`, `Ivan Kozlov`, `Ammy Lee`, `Natali Portman`];
-  const randomAuthor = authors[getRandomInteger(0, authors.length - 1)];
-  return randomAuthor;
+  return `./images/emoji/${emotions[getRandomInteger(0, emotions.length - 1)]}.png`;
 };
 
 const generateDate = () => {
@@ -25,14 +17,14 @@ const generateDate = () => {
   const end = new Date();
   const randomDate = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 
-  return `${randomDate.getFullYear()}/${randomDate.getMonth()}/${randomDate.getDate()} ${randomDate.getHours()}:${randomDate.getMinutes()}`;
+  return changeDateFormat(randomDate);
 };
 
 export const generateComment = () => {
   return {
-    text: generateText(),
+    text: getRandomElement(texts),
     emotion: generateEmotion(),
-    author: generateAuthor(),
+    author: getRandomElement(authors),
     date: generateDate(),
   };
 };
