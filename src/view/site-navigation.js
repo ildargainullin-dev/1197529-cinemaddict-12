@@ -1,3 +1,4 @@
+import {createElement} from "../utils.js";
 const createFilterItemTemplate = (filter) => {
   const {
     title,
@@ -7,7 +8,7 @@ const createFilterItemTemplate = (filter) => {
   return `<a href="#${title}" class="main-navigation__item">${filterTitle} <span class="main-navigation__item-count">${count}</span></a>`;
 };
 
-export const createSiteNavigationTemplate = (filterData) => {
+const createSiteNavigationTemplate = (filterData) => {
   const filterItemsTemplate = filterData.map(createFilterItemTemplate).join(``);
 
   return (
@@ -20,3 +21,26 @@ export const createSiteNavigationTemplate = (filterData) => {
   </nav>`
   );
 };
+
+export default class SiteMenu {
+  constructor(filters) {
+    this._filters = filters;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createSiteNavigationTemplate(this._filters);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
