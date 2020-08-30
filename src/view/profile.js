@@ -1,3 +1,5 @@
+import {createElement} from "../utils.js";
+
 const LEVEL_1_LIMIT = 1;
 const LEVEL_2_LIMIT = 10;
 const LEVEL_3_LIMIT = 20;
@@ -14,7 +16,7 @@ const generateRank = (filmsCount) => {
   return ``;
 };
 
-export const createProfileTemplate = (filmsCount) => {
+const createProfileTemplate = (filmsCount) => {
   return (
     `<section class="header__profile profile">
 <p class="profile__rating">${generateRank(filmsCount)}</p>
@@ -22,3 +24,27 @@ export const createProfileTemplate = (filmsCount) => {
 </section>`
   );
 };
+
+
+export default class Profile {
+  constructor(filmsLength) {
+    this._filmsLength = filmsLength;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createProfileTemplate(this._filmsLength);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

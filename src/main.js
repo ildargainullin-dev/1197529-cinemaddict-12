@@ -1,12 +1,17 @@
-import {createProfileTemplate} from "./view/profile.js";
-import {createSiteNavigationTemplate} from "./view/site-navigation.js";
-import {createFilmAreaTempate} from "./view/film-area.js";
-import {createFilmCardTemplate} from "./view/film-card.js";
-import {createShowMoreBtnTemplate} from "./view/show-more-btn.js";
-import {createFilmCardDetailsTemplate} from "./view/film-card-details.js";
-import {createFooterStatisticsTemplate} from "./view/footer-statistic.js";
+import ProfileView from "./view/profile.js";
+import SiteMenuView from "./view/site-navigation.js";
+import FilmAreaView from "./view/film-area.js";
+import SortView from "./view/sort.js";
+import FilmListView from "./view/film-list.js";
+import FilmContainerView from "./view/film-container.js";
+import FilmCardView from "./view/film-card.js";
+import ShowMoreButtonView from "./view/show-more-btn.js";
+import FilmCardDetailsView from "./view/film-card-details.js";
+import PopupCommentView from "./view/comment.js";
+import FooterStatisticView from "./view/footer-statistic.js";
 import {generateFilm} from "./mock/film.js";
 import {generateFilmsFilter} from "./mock/filters.js";
+import {render, RenderPosition} from "./utils.js";
 
 const FILM_COUNT = 20;
 const FILM_COUNT_PER_STEP = 5;
@@ -15,63 +20,92 @@ const ESC_KEY_CODE = 27;
 const films = new Array(FILM_COUNT).fill().map(generateFilm);
 const filters = generateFilmsFilter(films);
 
-const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
-};
-
 const siteHeaderElement = document.querySelector(`.header`);
 const siteMainElement = document.querySelector(`.main`);
 
-render(siteHeaderElement, createProfileTemplate(films.length), `beforeend`);
-render(siteMainElement, createSiteNavigationTemplate(filters), `beforeend`);
-render(siteMainElement, createFilmAreaTempate(), `beforeend`);
+render(siteHeaderElement, new SiteMenuView(filters).getElement(), RenderPosition.BEFOREEND);
+render(siteHeaderElement, new ProfileView(films.length).getElement(), RenderPosition.BEFOREEND);
 
-const filmListContainerElment = siteMainElement.querySelector(`.films-list__container`);
+const filmAreaComponent = new FilmAreaView();
+render(siteMainElement, filmAreaComponent.getElement(), RenderPosition.BEFOREEND);
+render(filmAreaComponent.getElement(), new SortView().getElement(), RenderPosition.AFTERBEGIN);
 
+const filmListComponent = new FilmListView();
+render(filmAreaComponent.getElement(), filmListComponent.getElement(), RenderPosition.BEFOREEND);
+
+const filmContainerComponent = new FilmContainerView();
+render(filmListComponent.getElement(), filmContainerComponent.getElement(), RenderPosition.BEFOREEND);
+
+const renderFilm = (filmListElement, film) => {
+  const filmComponent = new FilmCardView(film);
+  const filmPopupComponent = new FilmCardDetailsView(film);
+
+  const renderFilmCardDetails = () => {
+    render(siteFooterElement, filmPopupComponent.getElement(), RenderPosition.BEFOREEND);
+    const popupContainer = document.querySelector(`.film-details__inner`);
+
+    render(popupContainer, new PopupCommentView(film.comments).getElement(), RenderPosition.BEFOREEND);
+  };
+
+  filmComponent.getElement().querySelector(`.film-card__title`).addEventListener(`click`, () => {
+    renderFilmCardDetails();
+    window.addEventListener(`keydown`, escKeyDown);
+  });
+
+  filmComponent.getElement().querySelector(`.film-card__poster`).addEventListener(`click`, () => {
+    renderFilmCardDetails();
+    window.addEventListener(`keydown`, escKeyDown);
+  });
+
+  filmComponent.getElement().querySelector(`.film-card__comments`).addEventListener(`click`, () => {
+    renderFilmCardDetails();
+    window.addEventListener(`keydown`, escKeyDown);
+  });
+
+  filmPopupComponent.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, () => {
+    filmPopupComponent.getElement().remove();
+
+  });
+
+  const escKeyDown = (evt) => {
+    if (evt.keyCode === ESC_KEY_CODE) {
+      filmPopupComponent.getElement().remove();
+      window.removeEventListener(`keydown`, escKeyDown);
+    }
+  };
+
+  render(filmListElement, filmComponent.getElement(), RenderPosition.BEFOREEND);
+};
 
 for (let i = 0; i < Math.min(films.length, FILM_COUNT_PER_STEP); i++) {
-  render(filmListContainerElment, createFilmCardTemplate(films[i]), `beforeend`);
+  renderFilm(filmContainerComponent.getElement(), films[i]);
 }
-const filmListElement = siteMainElement.querySelector(`.films-list`);
 
 if (films.length > FILM_COUNT_PER_STEP) {
 
   let renderedFilmCount = FILM_COUNT_PER_STEP;
+  const showMoreButtonComponent = new ShowMoreButtonView();
+  render(filmAreaComponent.getElement(), showMoreButtonComponent.getElement(), RenderPosition.BEFOREEND);
 
-  render(filmListElement, createShowMoreBtnTemplate(), `beforeend`);
   const showMoreButton = document.querySelector(`.films-list__show-more`);
 
-  showMoreButton.addEventListener(`click`, (evt) => {
+  const onBtnClick = (evt) => {
     evt.preventDefault();
     films
       .slice(renderedFilmCount, renderedFilmCount + FILM_COUNT_PER_STEP)
-      .forEach((film) => render(filmListContainerElment, createFilmCardTemplate(film), `beforeend`));
+      .forEach((film) => renderFilm(filmContainerComponent.getElement(), film));
 
     renderedFilmCount += FILM_COUNT_PER_STEP;
 
     if (renderedFilmCount >= films.length) {
       showMoreButton.remove();
+      onBtnClick.remove();
     }
-  });
+  };
+
+  showMoreButtonComponent.getElement().addEventListener(`click`, onBtnClick);
 }
 
 const siteFooterElement = document.querySelector(`.footer`);
 const footerStatisticsElement = siteFooterElement.querySelector(`.footer__statistics`);
-render(footerStatisticsElement, createFooterStatisticsTemplate(films.length), `beforeend`);
-
-render(siteFooterElement, createFilmCardDetailsTemplate(films[0]), `afterend`);
-
-
-const popup = document.querySelector(`.film-details`);
-const popupCloseBtn = popup.querySelector(`.film-details__close-btn`);
-
-popupCloseBtn.addEventListener(`click`, () => {
-  popup.remove();
-});
-const escKeyDown = (evt) => {
-  if (evt.keyCode === ESC_KEY_CODE) {
-    popup.remove();
-    window.removeEventListener(`keydown`, escKeyDown);
-  }
-};
-window.addEventListener(`keydown`, escKeyDown);
+render(footerStatisticsElement, new FooterStatisticView(films.length).getElement(), RenderPosition.BEFOREEND);
