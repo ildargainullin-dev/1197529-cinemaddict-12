@@ -9,11 +9,12 @@ import ShowMoreButtonView from "./view/show-more-btn.js";
 import FilmCardDetailsView from "./view/film-card-details.js";
 import PopupCommentView from "./view/comment.js";
 import FooterStatisticView from "./view/footer-statistic.js";
+import NoFilmMessageView from "./view/no-films.js";
 import {generateFilm} from "./mock/film.js";
 import {generateFilmsFilter} from "./mock/filters.js";
 import {render, RenderPosition} from "./utils.js";
 
-const FILM_COUNT = 20;
+const FILM_COUNT = 1;
 const FILM_COUNT_PER_STEP = 5;
 const ESC_KEY_CODE = 27;
 
@@ -32,6 +33,10 @@ render(filmAreaComponent.getElement(), new SortView().getElement(), RenderPositi
 
 const filmListComponent = new FilmListView();
 render(filmAreaComponent.getElement(), filmListComponent.getElement(), RenderPosition.BEFOREEND);
+
+if (!films.length) {
+  render(filmListComponent.getElement(), new NoFilmMessageView().getElement(), RenderPosition.BEFOREEND);
+}
 
 const filmContainerComponent = new FilmContainerView();
 render(filmListComponent.getElement(), filmContainerComponent.getElement(), RenderPosition.BEFOREEND);
